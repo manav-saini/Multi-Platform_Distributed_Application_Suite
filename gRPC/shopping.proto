@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+service MarketService {
+  rpc RegisterSeller(SellerRequest) returns (Notification);
+  rpc SellItem(Item) returns (Notification);
+  rpc UpdateItem(Item) returns (Notification);
+  rpc DeleteItem(Item) returns (Notification);
+  rpc DisplaySellerItems(SellerRequest) returns (ItemList);
+  rpc SearchItem(SearchRequest) returns (ItemList);
+  rpc BuyItem(BuyerRequest) returns (Notification);
+  rpc AddToWishlist(BuyerRequest) returns (Notification);
+  rpc RateItem(BuyerRequest) returns (Notification);
+  rpc notify_buyers(Item) returns (Notification);
+}
+
+
+message SellerRequest {
+  string address = 1;
+  string uuid = 2;
+}
+
+message Item {
+  int32 id = 1;
+  string name = 2;
+  string category = 3;
+  int32 quantity = 4;
+  string description = 5;
+  string sellerAddress = 6;
+  string sellerUUID = 7;
+  float price = 8;
+}
+
+message SellRequest {
+  string name = 1;
+  string category = 2;
+  int32 quantity = 3;
+  string description = 4;
+  string sellerAddress = 5;
+  string sellerUUID = 6;
+  float price = 7;
+}
+
+message ItemList {
+  repeated Item items = 1;
+}
+
+message SearchRequest {
+  string itemName = 1;
+  string category = 2;
+}
+message BuyerRequest {
+  string itemName = 1;
+  string category = 2;
+  int32 itemId = 3;
+  int32 quantity = 4;
+  string buyerAddress = 5;
+  string buyerUUID = 6;
+  int32 rating = 7;
+}
+
+message Notification {
+  string message = 1;
+}
