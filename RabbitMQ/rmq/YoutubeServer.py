@@ -25,10 +25,16 @@ class YoutubeServer:
 
             if action == "subscribed" and youtuber_name not in self.user_subscriptions[user_name]:
                 self.user_subscriptions[user_name].append(youtuber_name)
+                print(f"{user_name} {action} to {youtuber_name}")
             elif action == "unsubscribed" and youtuber_name in self.user_subscriptions[user_name]:
                 self.user_subscriptions[user_name].remove(youtuber_name)
+                print(f"{user_name} {action} to {youtuber_name}")
+            elif action == "subscribed" and youtuber_name in self.user_subscriptions[user_name]:
+                print('Cannot subscribe to an already subribed channel')
+            elif action =="unsubscribed" and youtuber_name not in self.user_subscriptions[user_name]:
+                print('Cannot unsubscribe to an already not subribed channel')
 
-            print(f"{user_name} {action} to {youtuber_name}")
+            # print(f"{user_name} {action} to {youtuber_name}")
 
         else:
             print(f"{user_name} logged in")
