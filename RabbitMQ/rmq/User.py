@@ -19,7 +19,7 @@ class User:
         message = json.dumps(request)
         self.channel.basic_publish(exchange='', routing_key='user_requests', body=message)
         action = "subscribed" if subscribe else "unsubscribed"
-        print(f"SUCCESS: {self.user_name} {action} to {youtuber_name}")
+        print(f"{self.user_name} is {action} to {youtuber_name}")
 
     def receive_notifications(self, ch, method, properties, body):
         notification = body.decode('utf-8')
