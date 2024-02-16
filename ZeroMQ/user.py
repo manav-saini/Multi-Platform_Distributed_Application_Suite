@@ -47,9 +47,12 @@ class User:
 
     def send_message(self):
         user_message = input("Enter your message: ")
-        self.group_socket.send_string(f"MESSAGE SEND FROM {self.user_uuid} {user_message}")
-        response = self.group_socket.recv_string()
-        print(response)
+        if user_message=="":
+            print("Empty string is not allowed")
+        else:
+            self.group_socket.send_string(f"MESSAGE SEND FROM {self.user_uuid} {user_message}")
+            response = self.group_socket.recv_string()
+            print(response)
 
     def run(self):
         while True: 
