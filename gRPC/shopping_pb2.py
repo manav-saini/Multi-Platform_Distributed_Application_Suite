@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0eshopping.proto\".\n\rSellerRequest\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\x12\x0c\n\x04uuid\x18\x02 \x01(\t\"\x93\x01\n\x04Item\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x03 \x01(\t\x12\x10\n\x08quantity\x18\x04 \x01(\x05\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t\x12\x15\n\rsellerAddress\x18\x06 \x01(\t\x12\x12\n\nsellerUUID\x18\x07 \x01(\t\x12\r\n\x05price\x18\x08 \x01(\x02\"\x8e\x01\n\x0bSellRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\x12\x10\n\x08quantity\x18\x03 \x01(\x05\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12\x15\n\rsellerAddress\x18\x05 \x01(\t\x12\x12\n\nsellerUUID\x18\x06 \x01(\t\x12\r\n\x05price\x18\x07 \x01(\x02\" \n\x08ItemList\x12\x14\n\x05items\x18\x01 \x03(\x0b\x32\x05.Item\"3\n\rSearchRequest\x12\x10\n\x08itemName\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\"\x8d\x01\n\x0c\x42uyerRequest\x12\x10\n\x08itemName\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\x12\x0e\n\x06itemId\x18\x03 \x01(\x05\x12\x10\n\x08quantity\x18\x04 \x01(\x05\x12\x14\n\x0c\x62uyerAddress\x18\x05 \x01(\t\x12\x11\n\tbuyerUUID\x18\x06 \x01(\t\x12\x0e\n\x06rating\x18\x07 \x01(\x05\"\x1f\n\x0cNotification\x12\x0f\n\x07message\x18\x01 \x01(\t2\xad\x03\n\rMarketService\x12/\n\x0eRegisterSeller\x12\x0e.SellerRequest\x1a\r.Notification\x12 \n\x08SellItem\x12\x05.Item\x1a\r.Notification\x12\"\n\nUpdateItem\x12\x05.Item\x1a\r.Notification\x12\"\n\nDeleteItem\x12\x05.Item\x1a\r.Notification\x12/\n\x12\x44isplaySellerItems\x12\x0e.SellerRequest\x1a\t.ItemList\x12\'\n\nSearchItem\x12\x0e.SearchRequest\x1a\t.ItemList\x12\'\n\x07\x42uyItem\x12\r.BuyerRequest\x1a\r.Notification\x12-\n\rAddToWishlist\x12\r.BuyerRequest\x1a\r.Notification\x12(\n\x08RateItem\x12\r.BuyerRequest\x1a\r.Notification\x12%\n\rnotify_buyers\x12\x05.Item\x1a\r.Notificationb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0eshopping.proto\".\n\rSellerRequest\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\x12\x0c\n\x04uuid\x18\x02 \x01(\t\"\xa3\x01\n\x04Item\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x03 \x01(\t\x12\x10\n\x08quantity\x18\x04 \x01(\x05\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t\x12\x15\n\rsellerAddress\x18\x06 \x01(\t\x12\x12\n\nsellerUUID\x18\x07 \x01(\t\x12\r\n\x05price\x18\x08 \x01(\x02\x12\x0e\n\x06rating\x18\t \x01(\x02\"\x8e\x01\n\x0bSellRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\x12\x10\n\x08quantity\x18\x03 \x01(\x05\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12\x15\n\rsellerAddress\x18\x05 \x01(\t\x12\x12\n\nsellerUUID\x18\x06 \x01(\t\x12\r\n\x05price\x18\x07 \x01(\x02\" \n\x08ItemList\x12\x14\n\x05items\x18\x01 \x03(\x0b\x32\x05.Item\"3\n\rSearchRequest\x12\x10\n\x08itemName\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\"\x8d\x01\n\x0c\x42uyerRequest\x12\x10\n\x08itemName\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\x12\x0e\n\x06itemId\x18\x03 \x01(\x05\x12\x10\n\x08quantity\x18\x04 \x01(\x05\x12\x14\n\x0c\x62uyerAddress\x18\x05 \x01(\t\x12\x11\n\tbuyerUUID\x18\x06 \x01(\t\x12\x0e\n\x06rating\x18\x07 \x01(\x05\"\x1f\n\x0cNotification\x12\x0f\n\x07message\x18\x01 \x01(\t2\xd4\x03\n\rMarketService\x12/\n\x0eRegisterSeller\x12\x0e.SellerRequest\x1a\r.Notification\x12 \n\x08SellItem\x12\x05.Item\x1a\r.Notification\x12\"\n\nUpdateItem\x12\x05.Item\x1a\r.Notification\x12\"\n\nDeleteItem\x12\x05.Item\x1a\r.Notification\x12/\n\x12\x44isplaySellerItems\x12\x0e.SellerRequest\x1a\t.ItemList\x12\'\n\nSearchItem\x12\x0e.SearchRequest\x1a\t.ItemList\x12\'\n\x07\x42uyItem\x12\r.BuyerRequest\x1a\r.Notification\x12-\n\rAddToWishlist\x12\r.BuyerRequest\x1a\r.Notification\x12(\n\x08RateItem\x12\r.BuyerRequest\x1a\r.Notification\x12%\n\rnotify_buyers\x12\x05.Item\x1a\r.Notification\x12%\n\rnotify_seller\x12\x05.Item\x1a\r.Notification24\n\x0c\x42uyerService\x12$\n\x0cNotifyClient\x12\x05.Item\x1a\r.Notification25\n\rSellerService\x12$\n\x0cNotifyClient\x12\x05.Item\x1a\r.Notificationb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -24,17 +24,21 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_SELLERREQUEST']._serialized_start=18
   _globals['_SELLERREQUEST']._serialized_end=64
   _globals['_ITEM']._serialized_start=67
-  _globals['_ITEM']._serialized_end=214
-  _globals['_SELLREQUEST']._serialized_start=217
-  _globals['_SELLREQUEST']._serialized_end=359
-  _globals['_ITEMLIST']._serialized_start=361
-  _globals['_ITEMLIST']._serialized_end=393
-  _globals['_SEARCHREQUEST']._serialized_start=395
-  _globals['_SEARCHREQUEST']._serialized_end=446
-  _globals['_BUYERREQUEST']._serialized_start=449
-  _globals['_BUYERREQUEST']._serialized_end=590
-  _globals['_NOTIFICATION']._serialized_start=592
-  _globals['_NOTIFICATION']._serialized_end=623
-  _globals['_MARKETSERVICE']._serialized_start=626
-  _globals['_MARKETSERVICE']._serialized_end=1055
+  _globals['_ITEM']._serialized_end=230
+  _globals['_SELLREQUEST']._serialized_start=233
+  _globals['_SELLREQUEST']._serialized_end=375
+  _globals['_ITEMLIST']._serialized_start=377
+  _globals['_ITEMLIST']._serialized_end=409
+  _globals['_SEARCHREQUEST']._serialized_start=411
+  _globals['_SEARCHREQUEST']._serialized_end=462
+  _globals['_BUYERREQUEST']._serialized_start=465
+  _globals['_BUYERREQUEST']._serialized_end=606
+  _globals['_NOTIFICATION']._serialized_start=608
+  _globals['_NOTIFICATION']._serialized_end=639
+  _globals['_MARKETSERVICE']._serialized_start=642
+  _globals['_MARKETSERVICE']._serialized_end=1110
+  _globals['_BUYERSERVICE']._serialized_start=1112
+  _globals['_BUYERSERVICE']._serialized_end=1164
+  _globals['_SELLERSERVICE']._serialized_start=1166
+  _globals['_SELLERSERVICE']._serialized_end=1219
 # @@protoc_insertion_point(module_scope)

@@ -1,8 +1,22 @@
 import grpc
 import shopping_pb2
 import shopping_pb2_grpc
+from concurrent.futures import ThreadPoolExecutor
 import random
 import uuid
+
+class SellerServicer(shopping_pb2_grpc.SellerServiceServicer):
+    def NotifyClient(self, request, context):
+        print(request)
+        return shopping_pb2.Notification(message=f"RECEIVED")
+
+def serve():
+    server = grpc.server(ThreadPoolExecutor())
+    shopping_pb2_grpc.add_SellerServiceServicer_to_server(SellerServicer(), server)
+    server.add_insecure_port('[::]:50069')
+    server.start()
+    print("Buyer server running on port 50069")
+    server.wait_for_termination()
 
 def run():
     with grpc.insecure_channel('localhost:50051') as channel:
@@ -13,8 +27,8 @@ def run():
         print("4. Delete Item")
         print("5. Display Seller Items")
         print("6. Stop Service")
-        ip_address = "192.168.29.25"
-        port = random.randint(5001,5999)
+        ip_address = "localhost"
+        port = "50069"
         ip_address = ip_address+":"+str(port) 
         user_input = input("Enter selection: ")
         unique_id=""
@@ -63,4 +77,10 @@ def run():
         return 0
 
 if __name__ == '__main__':
-    run()
+    print("1. Start notif server")
+    print("2. Functionalities")
+    choice = input("Enter choice: ")
+    if choice=="1":
+        serve()
+    else:
+        run()

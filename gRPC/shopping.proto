@@ -11,6 +11,15 @@ service MarketService {
   rpc AddToWishlist(BuyerRequest) returns (Notification);
   rpc RateItem(BuyerRequest) returns (Notification);
   rpc notify_buyers(Item) returns (Notification);
+  rpc notify_seller(Item) returns (Notification);
+}
+
+service BuyerService {
+  rpc NotifyClient(Item) returns (Notification);;
+}
+
+service SellerService {
+  rpc NotifyClient(Item) returns (Notification);;
 }
 
 
@@ -28,6 +37,7 @@ message Item {
   string sellerAddress = 6;
   string sellerUUID = 7;
   float price = 8;
+  float rating = 9;
 }
 
 message SellRequest {

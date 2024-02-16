@@ -9,16 +9,16 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
         self.items = []
         self.buyers_wishlist = {}
         self.items_buyers_rating = {}
+        self.items_seller = {}
 
     def RegisterSeller(self, request, context):
         print(f"Seller join request from {request.address}, uuid = {request.uuid}")
         for seller in self.sellers:
             if seller.address == request.address:
-                self.buyers_wishlist[seller.address]=[]
+                # self.buyers_wishlist[seller.address]=[]
                 return shopping_pb2.Notification(message="FAILED: Seller already registered with this address")
         self.sellers.append(shopping_pb2.SellerRequest(address=request.address, uuid=request.uuid))
         print(self.sellers)
-        self.buyers_wishlist[request.address] = []
         return shopping_pb2.Notification(message="SUCCESS")
 
     def SellItem(self, request, context):
@@ -31,6 +31,7 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
                                               price=float(request.price))
                 self.items.append(new_item)
                 self.items_buyers_rating[item_id]={}
+                self.items_seller[item_id] = request.sellerAddress
                 print(self.items)
                 return shopping_pb2.Notification(message=f"SUCCESS: Item added with ID {item_id}")
         return shopping_pb2.Notification(message="FAILED: Invalid seller credentials")
@@ -49,9 +50,10 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
                         sellerAddress = request.sellerAddress
                         sellerUUID = request.sellerUUID
                         price = request.price
+                        rating = item.rating
                         updated_item = shopping_pb2.Item(id=int(id), name=name, category=category, quantity=int(quantity),
                                               description=description, sellerAddress=sellerAddress, sellerUUID=sellerUUID,
-                                              price=float(price))
+                                              price=float(price),rating=rating)
                         self.items.remove(item)
                         self.items.append(updated_item)
                         self.notify_buyers(updated_item)
@@ -77,13 +79,21 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
         seller_items = [item for item in self.items if item.sellerAddress == request.address]
         return shopping_pb2.ItemList(items=seller_items)
 
+    def notify_seller(self, item):
+        print(self.items_seller)
+        seller_address = self.items_seller[item.id]
+        seller_channel = grpc.insecure_channel(seller_address)
+        seller_stub = shopping_pb2_grpc.SellerServiceStub(seller_channel)
+        response = seller_stub.NotifyClient(item)
+        
     def notify_buyers(self, updated_item):
-        for buyer_address, wishlist in self.buyers_wishlist.items():
+        for buyer_address in self.buyers_wishlist:
+            wishlist = self.buyers_wishlist[buyer_address]
             if updated_item.id in wishlist:
+                print(buyer_address)
                 buyer_channel = grpc.insecure_channel(buyer_address)
                 buyer_stub = shopping_pb2_grpc.BuyerServiceStub(buyer_channel)
-                notification = shopping_pb2.Notification(message=f"\n\nThe Following Item has been updated:\n\n{updated_item}\n\n")
-                buyer_stub.NotifyClient(notification)
+                response = buyer_stub.NotifyClient(updated_item)
     
     def SearchItem(self, request, context):
         print(f"Search request for Item name: {request.itemName}, Category: {request.category}")
@@ -101,18 +111,28 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
                 quant = items.quantity-request.quantity
                 if quant>0:
                     items.quantity = items.quantity-request.quantity
+                    self.notify_seller(items)
                     return shopping_pb2.Notification(message="SUCCESS: Item purchased")
         return shopping_pb2.Notification(message="FAIL")
     
     def AddToWishlist(self, request, context):
         print(f"Wishlist request of item {request.itemId}, from {request.buyerAddress}")
-        self.buyers_wishlist[request.buyerAddress].append(request.itemId)
+        if request.buyerAddress not in self.buyers_wishlist:
+            self.buyers_wishlist[request.buyerAddress] = []
+        wishlist = self.buyers_wishlist[request.buyerAddress]
+        wishlist.append(request.itemId)
+        self.buyers_wishlist[request.buyerAddress] = wishlist
         return shopping_pb2.Notification(message="SUCCESS: Item added to wishlist")
     
     def RateItem(self, request, context):
         print(f"{request.buyerAddress} rated item {request.itemId} with {request.rating} stars.")
-        if request.buyerAddress not in self.items_buyers_rating[request.item_id]:
-            self.items_buyers_rating[request.item_id][request.buyerAddress] = request.rating
+        if request.buyerAddress not in self.items_buyers_rating[request.itemId]:
+            self.items_buyers_rating[request.itemId][request.buyerAddress] = request.rating
+            for item in self.items:
+                if item.id==request.itemId:
+                    print(self.items_buyers_rating[request.itemId])
+                    sum_rating = sum(list(self.items_buyers_rating[request.itemId].values()))
+                    item.rating = sum_rating/len(self.items_buyers_rating[request.itemId])
         return shopping_pb2.Notification(message=f"SUCCESS: Item {request.itemId} rated with {request.rating} stars.")
     
 

@@ -1,12 +1,23 @@
 import grpc
-from concurrent.futures import ThreadPoolExecutor
 import shopping_pb2
 import shopping_pb2_grpc
+from concurrent.futures import ThreadPoolExecutor
 import random
+import uuid
+
 
 class BuyerServicer(shopping_pb2_grpc.BuyerServiceServicer):
     def NotifyClient(self, request, context):
-        print(request.message)
+        print(request)
+        return shopping_pb2.Notification(message=f"RECEIVED")
+
+def serve():
+    server = grpc.server(ThreadPoolExecutor())
+    shopping_pb2_grpc.add_BuyerServiceServicer_to_server(BuyerServicer(), server)
+    server.add_insecure_port('[::]:50056')
+    server.start()
+    print("Buyer server running on port 50056")
+    server.wait_for_termination()
 
 def run():
     with grpc.insecure_channel('localhost:50051') as channel:
@@ -16,8 +27,8 @@ def run():
         print("3. Add to Wishlist")
         print("4. Rate Item")
         print("5. Quit")
-        ip_address = "192.168.29.25"
-        port = random.randint(5001,5999)
+        ip_address = "localhost"
+        port = "50056"
         ip_address = ip_address+":"+str(port) 
         user_input = input("Enter selection: ")
         while user_input!="5":
@@ -34,21 +45,22 @@ def run():
                     #       Quantity Remaining: {itemlist.Item.quantity},
                     #       Rating: {itemlist.Item.rating} / 5 | Seller: {itemlist.Item.sellerAddress}""")
             elif user_input == "2":
-                item_id = input("Item ID: ")
-                quant = input("Quantity: ")
+                item_id = int(input("Item ID: "))
+                quant = int(input("Quantity: "))
                 buy_item_request = shopping_pb2.BuyerRequest(itemName="", category="", itemId=item_id, quantity=quant, buyerAddress=ip_address, buyerUUID="", rating=0)
                 status = stub.BuyItem(buy_item_request)
                 print(status.message)
 
             elif user_input == "3":
-                item_id = input("Item ID: ")
+                item_id = int(input("Item ID: "))
                 wishlist_request = shopping_pb2.BuyerRequest(itemName="", category="", itemId=item_id, quantity=0, buyerAddress=ip_address, buyerUUID="", rating=0)
                 status = stub.AddToWishlist(wishlist_request)
                 print(status.message)
 
             elif user_input == "4":
-                item_id = input("Item ID: ")
-                rate_item_request = shopping_pb2.BuyerRequest(itemName="", category="", itemId=item_id, quantity=0, buyerAddress=ip_address, buyerUUID="", rating=0)
+                item_id = int(input("Item ID: "))
+                rating = int(input("Enter rating: "))
+                rate_item_request = shopping_pb2.BuyerRequest(itemName="", category="", itemId=item_id, quantity=0, buyerAddress=ip_address, buyerUUID="", rating=rating)
                 status = stub.RateItem(rate_item_request)
                 print(status.message)
 
@@ -61,5 +73,12 @@ def run():
             print("5. Quit")
             user_input = input("Enter selection: ")
         return 0
+
 if __name__ == '__main__':
-    run()
+    print("1. Start notif server")
+    print("2. Functionalities")
+    choice = input("Enter choice: ")
+    if choice=="1":
+        serve()
+    else:
+        run()
