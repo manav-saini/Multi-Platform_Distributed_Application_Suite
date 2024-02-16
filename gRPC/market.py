@@ -120,15 +120,11 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
     
     def AddToWishlist(self, request, context):
         print(f"Wishlist request of item {request.itemId}, from {request.buyerAddress}")
-        if request.itemId not in self.items:
-            print("The item has been deleted")
-            return
         if request.buyerAddress not in self.buyers_wishlist:
             self.buyers_wishlist[request.buyerAddress] = []
         wishlist = self.buyers_wishlist[request.buyerAddress]
         if request.itemId in wishlist:
-            print("item already in wishlist")
-            return
+            return shopping_pb2.Notification(message="Item already in wishlist")
         wishlist.append(request.itemId)
         self.buyers_wishlist[request.buyerAddress] = wishlist
         return shopping_pb2.Notification(message="SUCCESS: Item added to wishlist")

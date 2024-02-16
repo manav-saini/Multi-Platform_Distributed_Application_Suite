@@ -14,8 +14,6 @@ class GroupServer:
         self.group_messages = {}
         self.socket = self.context.socket(zmq.REP)
         self.socket.bind(f"tcp://*:{group_port}")
-
-        # Use a queue to pass messages between the main thread and worker threads
         self.message_queue = Queue()
 
     def register_with_message_server(self):

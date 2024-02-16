@@ -94,6 +94,9 @@ def run():
             user_input = input("Enter selection: ")
 
 if __name__ == '__main__':
-    serve_thread = threading.Thread(target=serve)
-    serve_thread.start()
-    run()
+    try:
+        serve_thread = threading.Thread(target=serve)
+        serve_thread.start()
+        run()
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")

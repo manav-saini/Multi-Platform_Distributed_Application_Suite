@@ -1,4 +1,3 @@
-# user.py
 import zmq
 import uuid
 

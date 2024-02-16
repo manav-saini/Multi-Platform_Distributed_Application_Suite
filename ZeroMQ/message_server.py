@@ -1,4 +1,3 @@
-# messaging_app_server.py
 import zmq
 import uuid
 
