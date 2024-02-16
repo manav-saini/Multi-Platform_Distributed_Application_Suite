@@ -1,25 +1,26 @@
 import pika
 import sys
 import json
+from YoutubeServer import YoutubeServer
 
 class User:
     def __init__(self, user_name):
+        credentials = pika.PlainCredentials('nj26', 'nj246')
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='34.28.175.156', credentials=credentials))
         self.user_name = user_name
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue='user_requests')
         self.channel.queue_declare(queue='notifications')
 
     def update_subscription(self, youtuber_name, subscribe):
+        
         request = {
             "user": self.user_name,
             "youtuber": youtuber_name,
-            "subscribe": subscribe
+            "subscribe": subscribe,
         }
         message = json.dumps(request)
         self.channel.basic_publish(exchange='', routing_key='user_requests', body=message)
-        action = "subscribed" if subscribe else "unsubscribed"
-        print(f"SUCCES: {self.user_name} is {action} to {youtuber_name}")
 
     def receive_notifications(self, ch, method, properties, body):
         notification = body.decode('utf-8')
