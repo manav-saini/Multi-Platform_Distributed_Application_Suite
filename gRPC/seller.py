@@ -32,6 +32,7 @@ def serve():
 def run():
     serve_event.wait()  # Wait until serve() completes
     market_ip = input("Enter Market host ip with port ")
+    allowed_categories=["ELECTRONICS","FASHION","OTHERS"]
     with grpc.insecure_channel(market_ip) as channel:
         global ip_address, port
         stub = shopping_pb2_grpc.MarketServiceStub(channel)
@@ -51,13 +52,16 @@ def run():
                 print(response.message)
             elif user_input == "2":
                 item_name = input("Item Name: ")
-                item_category = input("Category: ")
+                item_category = input("Category [ELECTRONICS,FASHION,OTHERS]: ")
+                if item_category.upper() not in allowed_categories:
+                    print("Enter Valid Category [ELECTRONICS,FASHION,OTHERS]")
+                    item_category = input("Category: ")
                 item_quant = input("Quantity: ")
                 item_description = input("Description: ")
                 item_price = input("Price: ")
                 item = shopping_pb2.Item(name=item_name, category=item_category, quantity=int(item_quant),
-                                          description=item_description, sellerAddress=ip_address, sellerUUID=unique_id,
-                                          price=float(item_price))
+                                        description=item_description, sellerAddress=ip_address, sellerUUID=unique_id,
+                                        price=float(item_price))
                 response = stub.SellItem(item)
                 print(response.message)
             elif user_input == "3":

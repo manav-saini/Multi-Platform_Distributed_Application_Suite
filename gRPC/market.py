@@ -18,7 +18,6 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
             if seller.address == request.address:
                 return shopping_pb2.Notification(message="FAILED: Seller already registered with this address")
         self.sellers.append(shopping_pb2.SellerRequest(address=request.address, uuid=request.uuid))
-        print(self.sellers)
         return shopping_pb2.Notification(message="SUCCESS")
 
     def SellItem(self, request, context):
@@ -32,7 +31,6 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
                 self.items.append(new_item)
                 self.items_buyers_rating[item_id]={}
                 self.items_seller[item_id] = request.sellerAddress
-                print(self.items)
                 return shopping_pb2.Notification(message=f"SUCCESS: Item added with ID {item_id}")
         return shopping_pb2.Notification(message="FAILED: Invalid seller credentials")
 
@@ -96,10 +94,13 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
                 response = buyer_stub.NotifyClient(updated_item)
     
     def SearchItem(self, request, context):
-        # Add your logic for searching items based on the request
         if len(request.itemName)!=0:
             print(f"Search request for Item name: {request.itemName}, Category: {request.category}")
             seller_items = [item for item in self.items if item.name == request.itemName]
+            return shopping_pb2.ItemList(items=seller_items)
+        elif request.category.upper()=="ANY":
+            print(f"Search request for Category: {request.category}")
+            seller_items = [item for item in self.items]
             return shopping_pb2.ItemList(items=seller_items)
         else:
             print(f"Search request for Category: {request.category}")
