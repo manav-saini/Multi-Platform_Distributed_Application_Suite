@@ -11,7 +11,7 @@ class User:
 
         # Connect to Message Server
         self.message_socket = self.context.socket(zmq.REQ)
-        self.message_socket.connect("tcp://localhost:2000")
+        self.message_socket.connect("tcp://34.170.118.164:2000")
 
         # Send GROUP LIST REQUEST to Message Server
         self.message_socket.send_string(f"GROUP LIST REQUEST FROM LOCALHOST:2000 [{self.user_uuid}]")
@@ -21,10 +21,10 @@ class User:
 
         # Connect to Group Server
         # group_server_ip = input("Enter the Group Server IP: ")
-        group_server_ip = "localhost"
+
         group_server_port = input("Enter the port for Group Server: ")
         self.group_socket = self.context.socket(zmq.REQ)
-        self.group_socket.connect(f"tcp://{group_server_ip}:{group_server_port}")
+        self.group_socket.connect(f"tcp://34.72.106.92:{group_server_port}")
 
     def print_menu(self):
         print("1. Join Group")
@@ -51,9 +51,12 @@ class User:
 
     def send_message(self):
         user_message = input("Enter your message: ")
-        self.group_socket.send_string(f"MESSAGE SEND FROM {self.user_uuid} {user_message}")
-        response = self.group_socket.recv_string()
-        print(response)
+        if user_message=="":
+            print("Empty message not allowed")
+        else:
+            self.group_socket.send_string(f"MESSAGE SEND FROM {self.user_uuid} {user_message}")
+            response = self.group_socket.recv_string()
+            print(response)
 
     def run(self):
         while True:
