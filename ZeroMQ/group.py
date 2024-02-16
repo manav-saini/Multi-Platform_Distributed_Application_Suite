@@ -66,11 +66,6 @@ class GroupServer:
         else:
             self.socket.send_string("Invalid Request")
 
-    # def get_messages_after_timestamp(self, timestamp):
-    #     messages = self.group_messages.get(timestamp, [])
-    #     print(self.group_messages)
-    #     print(messages)
-    #     return [f"{msg['timestamp']} - {msg['user_uuid']}: {msg['content']}" for msg in messages]
     def get_messages_after_timestamp(self, timestamp):
         relevant_messages = []
         for ts, msgs in self.group_messages.items():
@@ -94,7 +89,10 @@ class GroupServer:
 
         while True:
             message = self.socket.recv_string()
-            self.handle_client(message)
+            # self.handle_client(message)
+            thread = threading.Thread(target=self.handle_client, args=(message,))
+            thread.start()
+            thread.join()
             # self.message_queue.put(message)  # Put the received message in the queue
             # threading.Thread(target=self.handle_client_worker).start()
 
