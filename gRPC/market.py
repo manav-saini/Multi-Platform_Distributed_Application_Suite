@@ -2,6 +2,7 @@ import grpc
 from concurrent.futures import ThreadPoolExecutor
 import shopping_pb2
 import shopping_pb2_grpc
+import random
 
 class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
     def __init__(self):
@@ -15,7 +16,6 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
         print(f"Seller join request from {request.address}, uuid = {request.uuid}")
         for seller in self.sellers:
             if seller.address == request.address:
-                # self.buyers_wishlist[seller.address]=[]
                 return shopping_pb2.Notification(message="FAILED: Seller already registered with this address")
         self.sellers.append(shopping_pb2.SellerRequest(address=request.address, uuid=request.uuid))
         print(self.sellers)
@@ -96,13 +96,15 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
                 response = buyer_stub.NotifyClient(updated_item)
     
     def SearchItem(self, request, context):
-        print(f"Search request for Item name: {request.itemName}, Category: {request.category}")
         # Add your logic for searching items based on the request
-        if request.itemName !="":
+        if len(request.itemName)!=0:
+            print(f"Search request for Item name: {request.itemName}, Category: {request.category}")
             seller_items = [item for item in self.items if item.name == request.itemName]
             return shopping_pb2.ItemList(items=seller_items)
         else:
-            return shopping_pb2.ItemList(self.items)
+            print(f"Search request for Category: {request.category}")
+            seller_items = [item for item in self.items if item.category == request.category]
+            return shopping_pb2.ItemList(items=seller_items)
     
     def BuyItem(self, request, context):
         print(f"Buy request {request.quantity} of item {request.itemId}, from {request.buyerAddress}")
@@ -137,11 +139,12 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
     
 
 def serve():
+    port = str(random.randint(5001, 5999))
     server = grpc.server(ThreadPoolExecutor())
     shopping_pb2_grpc.add_MarketServiceServicer_to_server(MarketServicer(), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port(f'[::]:{port}')
     server.start()
-    print("Market server running on port 50051")
+    print(f"Market server running on port {port}")
     server.wait_for_termination()
 
 if __name__ == '__main__':
