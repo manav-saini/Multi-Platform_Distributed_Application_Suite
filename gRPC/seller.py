@@ -78,7 +78,7 @@ def run():
                 response = stub.DeleteItem(item_to_delete)
                 print(response.message)
             elif user_input == "5":
-                seller_info = shopping_pb2.SellerRequest(address=ip_address + ':' + port, uuid=unique_id)
+                seller_info = shopping_pb2.SellerRequest(address=ip_address, uuid=unique_id)
                 response = stub.DisplaySellerItems(seller_info)
                 for item in response.items:
                     print(

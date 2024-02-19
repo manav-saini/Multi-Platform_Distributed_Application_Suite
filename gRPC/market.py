@@ -39,7 +39,7 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
         for seller in self.sellers:
             if seller.address == request.sellerAddress and seller.uuid == request.sellerUUID:
                 for item in self.items:
-                    if item.id == request.id:
+                    if item.id == request.id and request.sellerAddress == item.sellerAddress:
                         name = item.name
                         id = request.id
                         category = item.category
@@ -65,7 +65,7 @@ class MarketServicer(shopping_pb2_grpc.MarketServiceServicer):
         for seller in self.sellers:
             if seller.address == request.sellerAddress and seller.uuid == request.sellerUUID:
                 for item in self.items:
-                    if item.id == request.id:
+                    if item.id == request.id and request.sellerAddress == item.sellerAddress:
                         self.items.remove(item)
                         return shopping_pb2.Notification(message=f"SUCCESS: Item {request.id} deleted")
                 return shopping_pb2.Notification(message=f"FAILED: Item {request.id} not found")
